@@ -14,7 +14,23 @@ Vue + GraphQL + TypeScript 練習用リポジトリ。
 
 ## 使い方
 
-coming soon
+GraphQL サーバーのインストールを行い起動する。
+
+```bash
+cd apollo-server-ts
+npm install
+npm run dev
+```
+
+別途GraphQL クライアントのインストールを行い起動する。
+
+```bash
+cd apollo-client-vue-ts
+npm install
+npm run serve
+```
+
+サーバーとクライアントが両方起動した状態で http://localhost:8080/ にアクセスするとサンプルデータが表示される。
 
 ## GraphQL サーバー構築手順
 
@@ -337,9 +353,132 @@ Apollo Sandbox で Authorization ヘッダーを付与した状態でクエリ�
 
 Vue + TypeScript + Apollo Client で GraphQL サーバーのデータを取得する GraphQL クライアントを構築する。
 
+Vue CLI をインストールする。
+
+```bash
+npm install -g @vue/cli
+```
+
+Vue CLI でプロジェクトを作成する。
+
+作成時 Manually select features を選択し TypeScript を追加する。その他はデフォルト値にする。
+
+```bash
+vue create apollo-client-vue-ts
+```
+
+Apollo Client 実行に必要なパッケージをインストールする。
+
+```bash
+npm install --save graphql graphql-tag @apollo/client
+```
+
+Composition API を利用するためのパッケージをインストールする。
+
+```bash
+npm install --save @vue/apollo-composable
+```
+
+GraphQL サーバーで作成した types フォルダを src フォルダに、 schema.graphql ファイルをプロジェクトディレクトリの直下にそれぞれコピーする。
+
+サーバーを起動する。
+
+起動後 http://localhost:8080/ にアクセスし、Vue の Welcome ページが表示されることを確認する。
+
+```bash
+npm run serve
+```
+
+src/main.ts の内容を置き換える。
+
+```ts
+import { createApp, provide, h } from 'vue'
+import App from './App.vue'
+
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { setContext } from '@apollo/client/link/context'
+import { DefaultApolloClient } from '@vue/apollo-composable'
+
+// HTTP connection to the API
+const httpLink = createHttpLink({
+  // You should use an absolute URL here
+  uri: 'http://localhost:4000',
+})
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  // const token = localStorage.getItem('token');
+  const token = 'dummy';
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+});
+
+// Cache implementation
+const cache = new InMemoryCache()
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache,
+})
+
+const app = createApp({
+  setup() {
+    provide(DefaultApolloClient, apolloClient)
+  },
+
+  render: () => h(App),
+})
+
+app.mount('#app')
+```
+
+src\components\HelloWorld.vue の script の内容を置き換える。
+
+```vue
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+import { Book } from '../types/generated/graphql'
+
+interface BookData {
+  books: Array<Book>
+}
+
+export default defineComponent({
+  name: 'HelloWorld',
+  props: {
+    msg: String,
+  },
+  setup() {
+    const { result } = useQuery<BookData>(gql`
+      query GetBooks {
+        books {
+          title
+          author
+        }
+      }
+    `)
+    return { result }
+  },
+})
+</script>
+```
+
+http://localhost:8080/ にアクセスしてサンプルデータが表示されていることを確認する。
+
 ## 参考文献
 
 - [okojomoeko/react-apollo](https://github.com/okojomoeko/react-apollo)
 - [Apollo Server with TypeScript](https://zenn.dev/intercept6/articles/3daca0298d32d8022e71)
 - [PostmanがいらなくなるかもしれないVSCodeの拡張機能Thunder Clientがすごい](https://zenn.dev/mseto/articles/vscode-thunder-client)
 - [GraphQL Code Generator](https://www.graphql-code-generator.com/)
+- [Installation | Vue Apollo](https://v4.apollo.vuejs.org/guide/installation.html)
+- [Setup | Vue Apollo](https://v4.apollo.vuejs.org/guide-composable/setup.html)
+- [Authentication - Client (React) - Apollo GraphQL Docs](https://www.apollographql.com/docs/react/networking/authentication/)
