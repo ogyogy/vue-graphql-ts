@@ -1,0 +1,15 @@
+overwrite: true
+generates:
+  ./src/types/generated/graphql.ts:
+    schema: schema.graphql
+    config:
+      # type: boolean default: false
+      # Adds an index signature to any generates resolver.
+      useIndexSignature: true
+      # resolver のための Context の型を src/types/context.d.ts から読み込む
+      # context から外部のデータを resolver に注入することが可能
+      # resolver とは GraphQL における操作の定義
+      contextType: ../context#Context
+    plugins:
+      - typescript
+      - typescript-resolvers
