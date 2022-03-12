@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { Book } from '../types/generated/graphql'
+import { Book, useGetBooksQuery } from '../types/generated/client'
 
 interface BookData {
   books: Array<Book>
@@ -12,14 +10,7 @@ defineProps<{ msg: string }>()
 
 const count = ref(0)
 
-const { result } = useQuery<BookData>(gql`
-  query GetBooks {
-    books {
-      title
-      author
-    }
-  }
-`)
+const { result } = useGetBooksQuery()
 </script>
 
 <template>

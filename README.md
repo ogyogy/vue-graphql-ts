@@ -230,7 +230,7 @@ npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql
 overwrite: true
 generates:
   ./src/types/generated/graphql.ts:
-    schema: schema.graphql
+    schema: ../schema.graphql
     config:
       # type: boolean default: false
       # Adds an index signature to any generates resolver.
@@ -502,6 +502,40 @@ npm run dev
 
 起動後 http://localhost:3000/ にアクセスし、サンプルデータが表示されていることを確認する。
 
+
+TypeScript の型生成に必要なライブラリをインストールする。
+
+```bash
+npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-graphql-request
+```
+
+codegen.yml を作成する。
+
+```yml
+schema: ../schema.graphql
+documents: graphql/**/*.graphql
+generates:
+  lib/generated/client.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+```
+
+package.json に追記する。
+
+```json
+"scripts": {
+  "codegen": "graphql-codegen --config codegen.yml",
+  // ...
+}
+```
+
+型生成する。
+
+```bash
+npm run codegen
+```
+
 ## 参考文献
 
 - [okojomoeko/react-apollo](https://github.com/okojomoeko/react-apollo)
@@ -512,3 +546,4 @@ npm run dev
 - [Setup | Vue Apollo](https://v4.apollo.vuejs.org/guide-composable/setup.html)
 - [Authentication - Client (React) - Apollo GraphQL Docs](https://www.apollographql.com/docs/react/networking/authentication/)
 - [はじめに | Vite](https://ja.vitejs.dev/guide/)
+- [GraphQL Code Generator で TypeScript の型を自動生成する - クックパッド開発者ブログ](https://techlife.cookpad.com/entry/2021/03/24/123214)

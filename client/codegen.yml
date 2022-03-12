@@ -1,0 +1,10 @@
+schema: ../schema.graphql
+documents: graphql/**/*.graphql
+generates:
+  ./src/types/generated/client.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-vue-apollo
+    config:
+      vueCompositionApiImportFrom: vue
