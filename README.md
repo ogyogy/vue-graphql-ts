@@ -263,7 +263,7 @@ package.json に型を生成するコマンドを追記する。
 ```json
 {
   "scripts": {
-    "codegen": "graphql-codegen --config codegen.yml",
+    "generate": "graphql-codegen --config codegen.yml",
   }
 }
 ```
@@ -271,7 +271,7 @@ package.json に型を生成するコマンドを追記する。
 型を生成するコマンドを実行する。
 
 ```bash
-npm run codegen
+npm run generate
 ```
 
 src/index.ts の内容を書き換える。
@@ -454,7 +454,7 @@ package.json に追記する。
 
 ```json
 "scripts": {
-  "codegen": "graphql-codegen --config codegen.yml",
+  "generate": "graphql-codegen --config codegen.yml",
   // ...
 }
 ```
@@ -462,7 +462,7 @@ package.json に追記する。
 型生成する。
 
 ```bash
-npm run codegen
+npm run generate
 ```
 
 src\components\HelloWorld.vue の内容を置き換える。
