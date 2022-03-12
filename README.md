@@ -429,33 +429,54 @@ const app = createApp({
 app.mount('#app')
 ```
 
+TypeScript の型生成に必要なライブラリをインストールする。
+
+```bash
+npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-vue-apollo
+```
+
+codegen.yml を作成する。
+
+```yml
+schema: ../schema.graphql
+documents: graphql/**/*.graphql
+generates:
+  ./src/types/generated/client.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-vue-apollo
+    config:
+      vueCompositionApiImportFrom: vue
+```
+
+package.json に追記する。
+
+```json
+"scripts": {
+  "codegen": "graphql-codegen --config codegen.yml",
+  // ...
+}
+```
+
+型生成する。
+
+```bash
+npm run codegen
+```
+
 src\components\HelloWorld.vue の内容を置き換える。
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { Book } from '../types/generated/graphql'
-
-interface BookData {
-  books: Array<Book>
-}
+import { useGetBooksQuery } from '../types/generated/client'
 
 defineProps<{ msg: string }>()
 
 const count = ref(0)
 
-const { result } = useQuery<BookData>(gql`
-  query GetBooks {
-    books {
-      title
-      author
-    }
-  }
-`)
-
-console.log(result.value)
+const { result } = useGetBooksQuery()
 </script>
 
 <template>
@@ -492,6 +513,7 @@ ul {
   list-style-type: none;
 }
 </style>
+
 ```
 
 開発用サーバーを起動する。
@@ -501,40 +523,6 @@ npm run dev
 ```
 
 起動後 http://localhost:3000/ にアクセスし、サンプルデータが表示されていることを確認する。
-
-
-TypeScript の型生成に必要なライブラリをインストールする。
-
-```bash
-npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-graphql-request
-```
-
-codegen.yml を作成する。
-
-```yml
-schema: ../schema.graphql
-documents: graphql/**/*.graphql
-generates:
-  lib/generated/client.ts:
-    plugins:
-      - typescript
-      - typescript-operations
-```
-
-package.json に追記する。
-
-```json
-"scripts": {
-  "codegen": "graphql-codegen --config codegen.yml",
-  // ...
-}
-```
-
-型生成する。
-
-```bash
-npm run codegen
-```
 
 ## 参考文献
 
