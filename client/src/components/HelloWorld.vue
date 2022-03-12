@@ -50,4 +50,9 @@ code {
   border-radius: 4px;
   color: #304455;
 }
+
+ul {
+  /* 箇条書きのマーカーを非表示 */
+  list-style-type: none;
+}
 </style>

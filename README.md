@@ -429,7 +429,7 @@ const app = createApp({
 app.mount('#app')
 ```
 
-src\components\HelloWorld.vue の script, template の内容を置き換える。
+src\components\HelloWorld.vue の内容を置き換える。
 
 ```vue
 <script setup lang="ts">
@@ -454,6 +454,8 @@ const { result } = useQuery<BookData>(gql`
     }
   }
 `)
+
+console.log(result.value)
 </script>
 
 <template>
@@ -467,6 +469,29 @@ const { result } = useQuery<BookData>(gql`
     </li>
   </ul>
 </template>
+
+<style scoped>
+a {
+  color: #42b983;
+}
+
+label {
+  margin: 0 0.5em;
+  font-weight: bold;
+}
+
+code {
+  background-color: #eee;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #304455;
+}
+
+ul {
+  /* 箇条書きのマーカーを非表示 */
+  list-style-type: none;
+}
+</style>
 ```
 
 開発用サーバーを起動する。
