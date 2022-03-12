@@ -17,7 +17,7 @@ Vue + GraphQL + TypeScript 練習用リポジトリ。
 GraphQL サーバーのインストールを行い起動する。
 
 ```bash
-cd apollo-server-ts
+cd server
 npm install
 npm run dev
 ```
@@ -25,7 +25,7 @@ npm run dev
 別途GraphQL クライアントのインストールを行い起動する。
 
 ```bash
-cd apollo-client-vue-ts
+cd client
 npm install
 npm run serve
 ```
@@ -39,8 +39,8 @@ npm run serve
 ### 初期設定
 
 ```bash
-mkdir apollo-server-ts
-cd apollo-server-ts
+mkdir server
+cd server
 npx gts init -y
 ```
 
@@ -48,7 +48,7 @@ packeage.json を開き name を設定する。
 
 ```json
 {
-  "name": "apollo-server-ts",
+  "name": "server",
 }
 ```
 
@@ -364,7 +364,7 @@ Vue CLI でプロジェクトを作成する。
 作成時 Manually select features を選択し TypeScript を追加する。その他はデフォルト値にする。
 
 ```bash
-vue create apollo-client-vue-ts
+vue create client
 ```
 
 Apollo Client 実行に必要なパッケージをインストールする。
