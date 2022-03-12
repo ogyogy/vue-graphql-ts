@@ -19,7 +19,7 @@ const books = [
 ];
 
 // スキーマの定義
-const schema = loadSchemaSync(join(__dirname, '../schema.graphql'), {
+const schema = loadSchemaSync(join(__dirname, '../../schema.graphql'), {
   loaders: [new GraphQLFileLoader()],
 });
 
