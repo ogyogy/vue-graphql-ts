@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Book, useGetBooksQuery } from '../types/generated/client'
-
-interface BookData {
-  books: Array<Book>
-}
+import { useGetBooksQuery } from '../types/generated/client'
 
 defineProps<{ msg: string }>()
 
