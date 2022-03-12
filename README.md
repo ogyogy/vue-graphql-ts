@@ -4,6 +4,8 @@ Vue + GraphQL + TypeScript 練習用リポジトリ。
 
 - [vue-graphql-ts](#vue-graphql-ts)
   - [使い方](#使い方)
+    - [GraphQL サーバー](#graphql-サーバー)
+    - [GraphQL クライアント](#graphql-クライアント)
   - [GraphQL サーバー構築手順](#graphql-サーバー構築手順)
     - [初期設定](#初期設定)
     - [Qurey定義](#qurey定義)
@@ -13,8 +15,7 @@ Vue + GraphQL + TypeScript 練習用リポジトリ。
   - [参考文献](#参考文献)
 
 ## 使い方
-
-GraphQL サーバーのインストールを行い起動する。
+### GraphQL サーバー
 
 ```bash
 cd server
@@ -22,15 +23,15 @@ npm install
 npm run dev
 ```
 
-別途GraphQL クライアントのインストールを行い起動する。
+### GraphQL クライアント
 
 ```bash
 cd client
 npm install
-npm run serve
+npm run dev
 ```
 
-サーバーとクライアントが両方起動した状態で http://localhost:8080/ にアクセスするとサンプルデータが表示される。
+サーバーとクライアントを両方起動後ブラウザで http://localhost:3000/ にアクセスするとサンプルデータが表示される。
 
 ## GraphQL サーバー構築手順
 
@@ -353,18 +354,16 @@ Apollo Sandbox で Authorization ヘッダーを付与した状態でクエリ�
 
 Vue + TypeScript + Apollo Client で GraphQL サーバーのデータを取得する GraphQL クライアントを構築する。
 
-Vue CLI をインストールする。
+Vite で Vue + TypeScript プロジェクトを生成する。
 
 ```bash
-npm install -g @vue/cli
+npm create vite@latest client -- --template vue-ts
 ```
 
-Vue CLI でプロジェクトを作成する。
-
-作成時 Manually select features を選択し TypeScript を追加する。その他はデフォルト値にする。
+生成したプロジェクトに移動する。
 
 ```bash
-vue create client
+cd client
 ```
 
 Apollo Client 実行に必要なパッケージをインストールする。
@@ -380,14 +379,6 @@ npm install --save @vue/apollo-composable
 ```
 
 GraphQL サーバーで作成した types フォルダを src フォルダに、 schema.graphql ファイルをプロジェクトディレクトリの直下にそれぞれコピーする。
-
-サーバーを起動する。
-
-起動後 http://localhost:8080/ にアクセスし、Vue の Welcome ページが表示されることを確認する。
-
-```bash
-npm run serve
-```
 
 src/main.ts の内容を置き換える。
 
@@ -438,11 +429,11 @@ const app = createApp({
 app.mount('#app')
 ```
 
-src\components\HelloWorld.vue の script の内容を置き換える。
+src\components\HelloWorld.vue の script, template の内容を置き換える。
 
 ```vue
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { Book } from '../types/generated/graphql'
@@ -451,27 +442,40 @@ interface BookData {
   books: Array<Book>
 }
 
-export default defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: String,
-  },
-  setup() {
-    const { result } = useQuery<BookData>(gql`
-      query GetBooks {
-        books {
-          title
-          author
-        }
-      }
-    `)
-    return { result }
-  },
-})
+defineProps<{ msg: string }>()
+
+const count = ref(0)
+
+const { result } = useQuery<BookData>(gql`
+  query GetBooks {
+    books {
+      title
+      author
+    }
+  }
+`)
 </script>
+
+<template>
+  <h1>{{ msg }}</h1>
+
+  <button type="button" @click="count++">count is: {{ count }}</button>
+
+  <ul v-if="result && result.books">
+    <li v-for="(book, index) in result.books" :key="index">
+      {{ book.title }}/{{ book.author }}
+    </li>
+  </ul>
+</template>
 ```
 
-http://localhost:8080/ にアクセスしてサンプルデータが表示されていることを確認する。
+開発用サーバーを起動する。
+
+```bash
+npm run dev
+```
+
+起動後 http://localhost:3000/ にアクセスし、サンプルデータが表示されていることを確認する。
 
 ## 参考文献
 
@@ -482,3 +486,4 @@ http://localhost:8080/ にアクセスしてサンプルデータが表示され
 - [Installation | Vue Apollo](https://v4.apollo.vuejs.org/guide/installation.html)
 - [Setup | Vue Apollo](https://v4.apollo.vuejs.org/guide-composable/setup.html)
 - [Authentication - Client (React) - Apollo GraphQL Docs](https://www.apollographql.com/docs/react/networking/authentication/)
+- [はじめに | Vite](https://ja.vitejs.dev/guide/)
