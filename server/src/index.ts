@@ -5,18 +5,9 @@ import { addResolversToSchema } from '@graphql-tools/schema';
 import { join } from 'path';
 import { Resolvers } from './types/generated/graphql';
 import { Context } from './types/context';
+import { PrismaClient } from '@prisma/client';
 
-// サンプルデータの定義
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-];
+const prisma = new PrismaClient();
 
 // スキーマの定義
 const schema = loadSchemaSync(join(__dirname, '../../schema.graphql'), {
@@ -28,8 +19,7 @@ const resolvers: Resolvers = {
   Query: {
     books: (_parent, _args, _context) => {
       // TODO: 詳細な認可処理を行う
-
-      return books;
+      return prisma.book.findMany();
     },
   },
 };

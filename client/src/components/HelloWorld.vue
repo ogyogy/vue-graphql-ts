@@ -16,7 +16,7 @@ const { result } = useGetBooksQuery()
 
   <ul v-if="result && result.books">
     <li v-for="(book, index) in result.books" :key="index">
-      {{ book.title }}/{{ book.author }}
+      {{ book.id }}/{{ book.title }}/{{ book.author }}
     </li>
   </ul>
 </template>

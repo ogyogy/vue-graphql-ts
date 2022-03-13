@@ -535,7 +535,19 @@ npm install prisma
 npx prisma init
 ```
 
-.envの接続文字列を修正する。
+server/.envの接続文字列を修正する。
+
+server/prisma/schema.prismaにモデル定義を追加する。
+
+```prisma
+// ...
+
+model Book {
+  id     Int    @unique @default(autoincrement())
+  title  String
+  author String
+}
+```
 
 schema.graphqlを修正する。
 
@@ -563,6 +575,123 @@ cd server
 npm run generate
 ```
 
+server/prisma/seed.tsを作成する。
+
+```ts
+import { PrismaClient, Prisma } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+const bookData: Prisma.BookCreateInput[] = [
+  {
+    id: 1,
+    title: 'The Awakening',
+    author: 'Kate Chopin',
+  },
+  {
+    id: 2,
+    title: 'City of Glass',
+    author: 'Paul Auster',
+  },
+]
+
+async function main() {
+  console.log(`Start seeding ...`)
+  for (const b of bookData) {
+    const book = await prisma.book.create({
+      data: b,
+    })
+    console.log(`Created user with id: ${book.id}`)
+  }
+  console.log(`Seeding finished.`)
+}
+
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
+```
+
+server/package.jsonにデータベースのシードスクリプトの実行コマンドを追加する。
+
+```json
+"prisma": {
+  "seed": "ts-node prisma/seed.ts"
+}
+```
+
+マイグレーションを実行する。
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Prisma Studioを起動し、データベースが生成されていること、データが追加されていることを確認する。
+
+```bash
+npx prisma studio
+```
+
+server/index.tsからサンプルデータの定義を削除する。
+
+server/src/index.tsを修正する。
+
+```ts
+// ...
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+// スキーマの定義
+// ...
+
+// リゾルバーの定義 (型のサポートを受けれる)
+const resolvers: Resolvers = {
+  Query: {
+    books: (_parent, _args, _context) => {
+      // TODO: 詳細な認可処理を行う
+      return prisma.book.findMany();
+    },
+  },
+};
+```
+
+client/graphql/getBooks.graphqlを修正する。
+
+```graphql
+query getBooks {
+  books {
+    id
+    title
+    author
+  }
+}
+```
+
+修正を型情報を反映させる。
+
+```bash
+npm run generate
+```
+
+client/src/components/HelloWorld.vueを修正する。
+
+```vue
+<template>
+  <!-- ... -->
+
+  <ul v-if="result && result.books">
+    <li v-for="(book, index) in result.books" :key="index">
+      {{ book.id }}/{{ book.title }}/{{ book.author }}
+    </li>
+  </ul>
+</template>
+```
+
 ## 参考文献
 
 - [okojomoeko/react-apollo](https://github.com/okojomoeko/react-apollo)
@@ -574,3 +703,5 @@ npm run generate
 - [Authentication - Client (React) - Apollo GraphQL Docs](https://www.apollographql.com/docs/react/networking/authentication/)
 - [はじめに | Vite](https://ja.vitejs.dev/guide/)
 - [GraphQL Code Generator で TypeScript の型を自動生成する - クックパッド開発者ブログ](https://techlife.cookpad.com/entry/2021/03/24/123214)
+- https://github.com/prisma/prisma-examples/tree/latest/typescript/graphql
+- https://www.prisma.io/docs/guides/database/seed-database

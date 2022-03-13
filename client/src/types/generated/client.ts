@@ -31,12 +31,13 @@ export type Query = {
 export type GetBooksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetBooksQuery = { __typename?: 'Query', books: Array<{ __typename?: 'Book', title: string, author: string }> };
+export type GetBooksQuery = { __typename?: 'Query', books: Array<{ __typename?: 'Book', id: number, title: string, author: string }> };
 
 
 export const GetBooksDocument = gql`
     query getBooks {
   books {
+    id
     title
     author
   }
