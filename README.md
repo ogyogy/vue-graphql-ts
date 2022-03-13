@@ -703,5 +703,9 @@ client/src/components/HelloWorld.vueを修正する。
 - [Authentication - Client (React) - Apollo GraphQL Docs](https://www.apollographql.com/docs/react/networking/authentication/)
 - [はじめに | Vite](https://ja.vitejs.dev/guide/)
 - [GraphQL Code Generator で TypeScript の型を自動生成する - クックパッド開発者ブログ](https://techlife.cookpad.com/entry/2021/03/24/123214)
-- https://github.com/prisma/prisma-examples/tree/latest/typescript/graphql
-- https://www.prisma.io/docs/guides/database/seed-database
+- [Apollo & Prisma & Database | Next-Generation ORM for SQL Databases](https://www.prisma.io/apollo)
+- [https://github.com/prisma/prisma-examples/tree/latest/typescript/graphql](https://github.com/prisma/prisma-examples/tree/latest/typescript/graphql)
+- [Seeding your database | Prisma Docs](https://www.prisma.io/docs/guides/database/seed-database)
+- [Data model (Reference) | Prisma Docs](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model)
+- [Prisma 基礎](https://zenn.dev/smish0000/articles/f1a6f463417b65)
+- [次世代の Node.js ORM 、Prisma を試す](https://zenn.dev/tatsurom/articles/prisma-tutorial-from-scratch)
