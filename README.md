@@ -12,6 +12,7 @@ Vue + GraphQL + TypeScript 練習用リポジトリ。
     - [スキーマファイル作成](#スキーマファイル作成)
     - [スキーマファイルから TypeScript の型生成](#スキーマファイルから-typescript-の型生成)
   - [GraphQL クライアント構築手順](#graphql-クライアント構築手順)
+  - [Prismaを使用してPostgreSQLと接続](#prismaを使用してpostgresqlと接続)
   - [参考文献](#参考文献)
 
 ## 使い方
@@ -523,6 +524,44 @@ npm run dev
 ```
 
 起動後 http://localhost:3000/ にアクセスし、サンプルデータが表示されていることを確認する。
+
+## Prismaを使用してPostgreSQLと接続
+
+Prismaをインストールする。
+
+```bash
+cd server
+npm install prisma
+npx prisma init
+```
+
+.envの接続文字列を修正する。
+
+schema.graphqlを修正する。
+
+```graphql
+type Book {
+  id: Int!
+  title: String!
+  author: String!
+}
+
+type Query {
+  books: [Book!]!
+}
+```
+
+型を再生成する。
+
+```bash
+cd client
+npm run generate
+```
+
+```bash
+cd server
+npm run generate
+```
 
 ## 参考文献
 
